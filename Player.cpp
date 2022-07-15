@@ -37,8 +37,8 @@ void Player::changeAngle(const float &value) {
     dy = std::sin(Utils::radians(angle));
 }
 
-void Player::renderPlayer(sf::RenderWindow &current_window, const RenderMode &render_mode) {
-    float scale = Utils::getScale(render_mode);
+void Player::renderPlayer(sf::RenderWindow &current_window, const RenderSize &render_size) {
+    float scale = Utils::getScale(render_size);
     sf::CircleShape player;
     player.setFillColor(sf::Color::Red);
     player.setRadius(10 * scale);
@@ -46,10 +46,9 @@ void Player::renderPlayer(sf::RenderWindow &current_window, const RenderMode &re
     current_window.draw(player);
 }
 
-void Player::castRays(sf::RenderWindow &current_window, const std::vector<segment_t> &walls, const RenderMode &render_mode) {
-    float scale = Utils::getScale(render_mode);
-
-    for (int i = -32; i <= 32; ++i) {
+void Player::castRays(sf::RenderWindow &current_window, const std::vector<segment_t> &walls, const RenderSize &render_size, const RenderMode &render_mode) {
+    size_t horizontal_offset = 0;
+    for (int i = -(Constants::fov / 2) ; i <= Constants::fov / 2; ++i) {
         sf::Vector2f ray_start = {x + 10, y + 10}, ray_end = {x + Constants::ray_length * std::cos(angle + i * Constants::ray_frequence), 
                                                             y + Constants::ray_length * std::sin(angle + i * Constants::ray_frequence)};
         bool intersectionFound = false;
@@ -67,15 +66,32 @@ void Player::castRays(sf::RenderWindow &current_window, const std::vector<segmen
                 }
             }
         }
+        if (render_mode == RenderMode::RENDER_2D) {
+            float scale = Utils::getScale(render_size);
 
-        ray_start.x *= scale, ray_start.y *= scale;
-        first_intersection.x *= scale, first_intersection.y *= scale;
+            ray_start.x *= scale, ray_start.y *= scale;
+            first_intersection.x *= scale, first_intersection.y *= scale;
 
-        sf::Vertex line[] =
-        {
-            sf::Vertex(ray_start),
-            sf::Vertex(first_intersection)
-        };
-        current_window.draw(line, 2, sf::Lines);
+            sf::Vertex line[] =
+            {
+                sf::Vertex(ray_start),
+                sf::Vertex(first_intersection)
+            };
+            current_window.draw(line, 2, sf::Lines);
+        }
+        else {
+            float width_coef = static_cast<float>(Constants::window_width) / (float)Constants::fov;
+            float height_coef = static_cast<float>(Constants::window_height) / (float)Constants::fov;
+
+            sf::Vertex line[] =
+            {
+                sf::Vertex({static_cast<float>(i + (Constants::fov / 2)) + width_coef * horizontal_offset, static_cast<float>(Constants::window_height) - static_cast<float>(std::sqrt(std::pow(first_intersection.x - ray_start.x, 2) + std::pow(first_intersection.y - ray_start.y, 2)))}),
+                sf::Vertex({static_cast<float>(i + (Constants::fov / 2)) + width_coef * horizontal_offset, static_cast<float>(std::sqrt(std::pow(first_intersection.x - ray_start.x, 2) + std::pow(first_intersection.y - ray_start.y, 2)))})
+            };
+            
+            current_window.draw(line, 2, sf::Lines);
+            
+            ++horizontal_offset;
+        }
     }
 }

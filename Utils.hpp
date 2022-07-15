@@ -13,10 +13,15 @@
 
 using segment_t = std::pair<sf::Vector2f, sf::Vector2f>;
 
-enum class RenderMode {
+enum class RenderSize {
     FULLSCREEN,
     MEDIUM,
     MINI
+};
+
+enum class RenderMode {
+    RENDER_2D,
+    RENDER_3D
 };
 
 namespace Utils {
@@ -40,7 +45,7 @@ namespace Utils {
 
     bool sameHalfplane(const sf::Vector2f &a, const sf::Vector2f &b, const sf::Vector2f &relative_point);
 
-    float getScale(const RenderMode &render_mode);
+    float getScale(const RenderSize &render_mode);
 }
 
 #endif

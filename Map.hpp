@@ -11,7 +11,7 @@ struct Wall {
     float left_upper_x, left_upper_y, right_lower_x, right_lower_y;
     sf::Color color = sf::Color::White;
 
-    Wall(float x1, float y1, float x2, float y2): left_upper_x(x1), left_upper_y(y1), right_lower_x(x2), right_lower_y(y2) {};
+    Wall(const float &x1, const float &y1, const float &x2, const float &y2): left_upper_x(x1), left_upper_y(y1), right_lower_x(x2), right_lower_y(y2) {};
     
     void setColor(const sf::Color &new_color);
 };
@@ -28,7 +28,7 @@ class Map {
 
         void drawWall(sf::RenderWindow &current_window, const Wall &wall);
 
-        void render(sf::RenderWindow &current_window, const RenderMode &render_mode);
+        void render(sf::RenderWindow &current_window, const RenderSize &render_size);
 
         std::vector<segment_t> calculateAllSurfacesCoordinates();
 };

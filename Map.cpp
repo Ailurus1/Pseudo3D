@@ -19,8 +19,19 @@ void Map::drawWall(sf::RenderWindow &current_window, const Wall &wall) {
     current_window.draw(wall_rectangle);
 }
 
-void Map::render(sf::RenderWindow &current_window, const RenderMode &render_mode) {
-    float scale = Utils::getScale(render_mode);
+void Map::render(sf::RenderWindow &current_window, const RenderSize &render_size) {
+    float scale = Utils::getScale(render_size);
+    sf::Vector2f left_upper_background = {std::numeric_limits<float>::max(), std::numeric_limits<float>::max()}, right_lower_background = {std::numeric_limits<float>::min(), std::numeric_limits<float>::min()};
+    for (const auto &wall: walls) {
+        left_upper_background.x = std::min(wall.left_upper_x * scale, left_upper_background.x);
+        left_upper_background.y = std::min(wall.left_upper_y * scale, left_upper_background.y);
+        right_lower_background.x = std::max(wall.right_lower_x * scale, right_lower_background.x);
+        right_lower_background.y = std::max(wall.right_lower_y * scale, right_lower_background.y);
+    }
+    sf::RectangleShape background_rectangle(sf::Vector2f(right_lower_background.x - left_upper_background.x, right_lower_background.y - left_upper_background.y));
+    background_rectangle.setPosition(left_upper_background.x, left_upper_background.y);
+    background_rectangle.setFillColor(sf::Color::Black);
+    current_window.draw(background_rectangle);
     for (auto wall: walls) {
         wall.left_upper_x *= scale;
         wall.left_upper_y *= scale;

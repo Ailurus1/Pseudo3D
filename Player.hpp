@@ -34,9 +34,9 @@ class Player {
 
         void changeAngle(const float &value);
 
-        void renderPlayer(sf::RenderWindow &current_window, const RenderMode &render_mode);
+        void renderPlayer(sf::RenderWindow &current_window, const RenderSize &render_size);
 
-        void castRays(sf::RenderWindow &current_window, const std::vector<segment_t> &walls, const RenderMode &render_mode);
+        void castRays(sf::RenderWindow &current_window, const std::vector<segment_t> &walls, const RenderSize &render_size, const RenderMode &render_mode);
 };
 
 #endif

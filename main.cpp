@@ -22,7 +22,7 @@ void createMap(Map &map) {
 }
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(1280, 720), "Pseudo3D", sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode(Constants::window_width, Constants::window_height), "Pseudo3D Renderer", sf::Style::Close);
     window.setKeyRepeatEnabled(true);
     sf::Event event;
 
@@ -40,7 +40,7 @@ int main() {
     std::vector<segment_t> all_walls = map.calculateAllSurfacesCoordinates();
     int count = 0;
 
-    RenderMode render_mode = RenderMode::MINI;
+    RenderSize render_size = RenderSize::MINI;
 
     while (window.isOpen()) {
         while (window.pollEvent(event)) {
@@ -68,9 +68,12 @@ int main() {
             time_without_update -= update_interval;
         }
         window.clear();
-        map.render(window, render_mode);
-        player.renderPlayer(window, render_mode);
-        player.castRays(window, all_walls, render_mode);
+        // map.render(window, RenderSize::FULLSCREEN);
+        // player.renderPlayer(window, RenderSize::FULLSCREEN);
+        player.castRays(window, all_walls, RenderSize::FULLSCREEN, RenderMode::RENDER_3D);
+        map.render(window, render_size);
+        player.renderPlayer(window, render_size);
+        player.castRays(window, all_walls, render_size, RenderMode::RENDER_2D);
         window.display();
         time_without_update += clock.restart().asSeconds();
     }
