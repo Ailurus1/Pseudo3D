@@ -26,8 +26,12 @@ float Utils::distance(const sf::Vector2f &a, const sf::Vector2f &b) {
 }
 
 std::optional<sf::Vector2f> Utils::segmentIntersection(const sf::Vector2f &start_a, const sf::Vector2f &end_a, const sf::Vector2f &start_b, const sf::Vector2f &end_b) {
-    float t = ((start_a.x - start_b.x) * (start_b.y - end_b.y) - (start_a.y - start_b.y) * (start_b.x - end_b.x)) / (end_a.x - start_a.x) * (end_b.y - start_b.y) - (end_a.y - start_a.y) * (end_b.x - start_b.x);
-    float u = ((end_a.x - start_a.x) * (start_a.y - start_b.y) - (end_a.y - start_a.y) * (start_a.x - start_b.x)) / (end_a.x - start_a.x) * (end_b.y - start_b.y) - (end_a.y - start_a.y) * (end_b.x - start_b.x);
+    float denominator = (end_a.x - start_a.x) * (end_b.y - start_b.y) - (end_a.y - start_a.y) * (end_b.x - start_b.x);
+    if (std::abs(denominator) < Constants::eps) {
+        return std::nullopt;
+    }
+    float t = ((start_a.x - start_b.x) * (start_b.y - end_b.y) - (start_a.y - start_b.y) * (start_b.x - end_b.x)) / ((end_a.x - start_a.x) * (end_b.y - start_b.y) - (end_a.y - start_a.y) * (end_b.x - start_b.x));
+    float u = ((end_a.x - start_a.x) * (start_a.y - start_b.y) - (end_a.y - start_a.y) * (start_a.x - start_b.x)) / ((end_a.x - start_a.x) * (end_b.y - start_b.y) - (end_a.y - start_a.y) * (end_b.x - start_b.x));
 
     return (t >= Constants::eps && (1 - t) >= Constants::eps && u >= Constants::eps && (1 - u) >= Constants::eps ? 
             std::optional(sf::Vector2f({start_a.x + t * (end_a.x - start_a.x), start_a.y + t * (end_a.y - start_a.y)}))
@@ -37,4 +41,17 @@ std::optional<sf::Vector2f> Utils::segmentIntersection(const sf::Vector2f &start
 bool Utils::sameHalfplane(const sf::Vector2f &a, const sf::Vector2f &b, const sf::Vector2f &relative_point) {
     return (((a.x - relative_point.x > 0) == (b.x - relative_point.x > 0)) || ((a.x - relative_point.x < 0) == (b.x - relative_point.x < 0))) && 
            (((a.y - relative_point.y > 0) == (b.y - relative_point.y > 0)) || ((a.y - relative_point.y < 0) == (b.y - relative_point.y < 0)));
+}
+
+float Utils::getScale(const RenderMode &render_mode) {
+    switch (render_mode) {
+        case RenderMode::FULLSCREEN:
+            return 1.0;
+        case RenderMode::MEDIUM:
+            return 0.5;
+        case RenderMode::MINI:
+            return 0.2;
+        default:
+            return 1.0;
+    }
 }

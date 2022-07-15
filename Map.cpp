@@ -19,14 +19,19 @@ void Map::drawWall(sf::RenderWindow &current_window, const Wall &wall) {
     current_window.draw(wall_rectangle);
 }
 
-void Map::render(sf::RenderWindow &current_window) {
-    for (const auto &wall: walls) {
+void Map::render(sf::RenderWindow &current_window, const RenderMode &render_mode) {
+    float scale = Utils::getScale(render_mode);
+    for (auto wall: walls) {
+        wall.left_upper_x *= scale;
+        wall.left_upper_y *= scale;
+        wall.right_lower_x *= scale;
+        wall.right_lower_y *= scale;
         drawWall(current_window, wall);
     }
 }
 
-std::vector<segment> Map::calculateAllSurfacesCoordinates() {
-    std::vector<segment> res;
+std::vector<segment_t> Map::calculateAllSurfacesCoordinates() {
+    std::vector<segment_t> res;
     for (const auto &wall: walls) {
         res.push_back({{wall.left_upper_x, wall.left_upper_y}, {wall.right_lower_x, wall.left_upper_y}});
         res.push_back({{wall.left_upper_x, wall.left_upper_y}, {wall.left_upper_x, wall.right_lower_y}});

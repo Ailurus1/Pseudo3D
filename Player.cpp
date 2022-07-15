@@ -37,22 +37,24 @@ void Player::changeAngle(const float &value) {
     dy = std::sin(Utils::radians(angle));
 }
 
-void Player::renderPlayer(sf::RenderWindow &current_window) {
+void Player::renderPlayer(sf::RenderWindow &current_window, const RenderMode &render_mode) {
+    float scale = Utils::getScale(render_mode);
     sf::CircleShape player;
-    player.setFillColor(sf::Color::Blue);
-    player.setRadius(8);
-    player.setPosition(x, y);
+    player.setFillColor(sf::Color::Red);
+    player.setRadius(10 * scale);
+    player.setPosition(x * scale, y * scale);
     current_window.draw(player);
 }
 
-void Player::castRays(sf::RenderWindow &current_window, const std::vector<segment> &walls) {
-    for (int i = -72; i <= 72; ++i) {
-        sf::Vector2f ray_start = {x + 8, y + 8}, ray_end = {x + Constants::ray_length * std::cos(angle + i * Constants::ray_frequence), 
+void Player::castRays(sf::RenderWindow &current_window, const std::vector<segment_t> &walls, const RenderMode &render_mode) {
+    float scale = Utils::getScale(render_mode);
+
+    for (int i = -32; i <= 32; ++i) {
+        sf::Vector2f ray_start = {x + 10, y + 10}, ray_end = {x + Constants::ray_length * std::cos(angle + i * Constants::ray_frequence), 
                                                             y + Constants::ray_length * std::sin(angle + i * Constants::ray_frequence)};
         bool intersectionFound = false;
         sf::Vector2f first_intersection = ray_end;
         for (const auto &wall: walls) {
-            // if ((wall.second.y <= ray_end.y <= wall.first.y || wall.first.y <= ray_end.y <= wall.second.y) || (wall.second.x <= ray_end.x <= wall.first.x || wall.first.x <= ray_end.x <= wall.second.x)) {
             auto intersection = Utils::segmentIntersection(ray_start, ray_end, wall.first, wall.second);
             if (intersection != std::nullopt) {
                 if (!intersectionFound) {
@@ -64,8 +66,11 @@ void Player::castRays(sf::RenderWindow &current_window, const std::vector<segmen
                     first_intersection = intersection.value();
                 }
             }
-            // }
         }
+
+        ray_start.x *= scale, ray_start.y *= scale;
+        first_intersection.x *= scale, first_intersection.y *= scale;
+
         sf::Vertex line[] =
         {
             sf::Vertex(ray_start),

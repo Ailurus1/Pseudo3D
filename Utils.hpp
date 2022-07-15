@@ -11,6 +11,14 @@
 
 #include "Constants.hpp"
 
+using segment_t = std::pair<sf::Vector2f, sf::Vector2f>;
+
+enum class RenderMode {
+    FULLSCREEN,
+    MEDIUM,
+    MINI
+};
+
 namespace Utils {
     struct Line {
         float a, b, c; // a*x + b*y + c = 0
@@ -31,6 +39,8 @@ namespace Utils {
     std::optional<sf::Vector2f> segmentIntersection(const sf::Vector2f &start_a, const sf::Vector2f &end_a, const sf::Vector2f &start_b, const sf::Vector2f &end_b);
 
     bool sameHalfplane(const sf::Vector2f &a, const sf::Vector2f &b, const sf::Vector2f &relative_point);
+
+    float getScale(const RenderMode &render_mode);
 }
 
 #endif

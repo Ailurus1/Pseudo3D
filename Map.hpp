@@ -5,7 +5,7 @@
 #include <utility>
 #include <SFML/Graphics.hpp>
 
-using segment = std::pair<sf::Vector2f, sf::Vector2f>;
+#include "Utils.hpp"
 
 struct Wall {
     float left_upper_x, left_upper_y, right_lower_x, right_lower_y;
@@ -28,9 +28,9 @@ class Map {
 
         void drawWall(sf::RenderWindow &current_window, const Wall &wall);
 
-        void render(sf::RenderWindow &current_window);
+        void render(sf::RenderWindow &current_window, const RenderMode &render_mode);
 
-        std::vector<segment> calculateAllSurfacesCoordinates();
+        std::vector<segment_t> calculateAllSurfacesCoordinates();
 };
 
 #endif
