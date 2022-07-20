@@ -46,7 +46,7 @@ float Utils::getScale(const RenderSize &render_mode) {
         case RenderSize::MEDIUM:
             return 0.5;
         case RenderSize::MINI:
-            return 0.2;
+            return 0.12;
         default:
             return 1.0;
     }

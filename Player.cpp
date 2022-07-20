@@ -48,7 +48,9 @@ void Player::renderPlayer(sf::RenderWindow &current_window, const RenderSize &re
 
 void Player::castRays(sf::RenderWindow &current_window, const std::vector<segment_t> &walls, const RenderSize &render_size, const RenderMode &render_mode) {
     size_t horizontal_offset = 0;
-    for (int i = -(Constants::fov / 2) ; i <= Constants::fov / 2; ++i) {
+    float max_dist = std::sqrt(Constants::window_width * Constants::window_width + Constants::window_height * Constants::window_height);
+    int color_coef = max_dist / 255;
+    for (int i = -(Constants::window_width / 2) ; i <= Constants::window_width / 2; ++i) {
         sf::Vector2f ray_start = {x + 10, y + 10}, ray_end = {x + Constants::ray_length * std::cos(angle + i * Constants::ray_frequence), 
                                                             y + Constants::ray_length * std::sin(angle + i * Constants::ray_frequence)};
         bool intersectionFound = false;
@@ -77,19 +79,24 @@ void Player::castRays(sf::RenderWindow &current_window, const std::vector<segmen
                 sf::Vertex(ray_start),
                 sf::Vertex(first_intersection)
             };
-            current_window.draw(line, 2, sf::Lines);
+            current_window.draw(line, 2, sf::PrimitiveType::Lines);
         }
         else {
-            float width_coef = static_cast<float>(Constants::window_width) / (float)Constants::fov;
-            float height_coef = static_cast<float>(Constants::window_height) / (float)Constants::fov;
+            float width_coef = 1.f / (static_cast<float>(Constants::window_width));
+            float current_dist = static_cast<float>(std::sqrt(std::pow(first_intersection.x - ray_start.x, 2) + std::pow(first_intersection.y - ray_start.y, 2)));
 
+            int color_offset = static_cast<int>(current_dist) / color_coef;
             sf::Vertex line[] =
             {
-                sf::Vertex({static_cast<float>(i + (Constants::fov / 2)) + width_coef * horizontal_offset, static_cast<float>(Constants::window_height) - static_cast<float>(std::sqrt(std::pow(first_intersection.x - ray_start.x, 2) + std::pow(first_intersection.y - ray_start.y, 2)))}),
-                sf::Vertex({static_cast<float>(i + (Constants::fov / 2)) + width_coef * horizontal_offset, static_cast<float>(std::sqrt(std::pow(first_intersection.x - ray_start.x, 2) + std::pow(first_intersection.y - ray_start.y, 2)))})
+                sf::Vertex(sf::Vector2f(static_cast<float>(i + (Constants::window_width / 2)) + width_coef * horizontal_offset, 
+                            static_cast<float>(Constants::window_height / 2) * (1.f + 180.f / current_dist)), 
+                            sf::Color(255 - color_offset, 255 - color_offset, 255 - color_offset)),
+                sf::Vertex(sf::Vector2f(static_cast<float>(i + (Constants::window_width / 2)) + width_coef * horizontal_offset, 
+                            static_cast<float>(Constants::window_height / 2) * (1.f - 180.f / current_dist)), 
+                            sf::Color(255 - color_offset, 255 - color_offset, 255 - color_offset))
             };
             
-            current_window.draw(line, 2, sf::Lines);
+            current_window.draw(line, 2, sf::PrimitiveType::Lines);
             
             ++horizontal_offset;
         }

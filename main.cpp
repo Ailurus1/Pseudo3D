@@ -9,20 +9,20 @@
 #include "Utils.hpp"
 
 void createMap(Map &map) {
-    map.addWall(Wall(45, 45, 90, 545));
+    map.addWall(Wall(90, 90, 135, 800));
     map.addWall(Wall(90, 500, 720, 545));
     map.addWall(Wall(450, 90, 900, 135));
     map.addWall(Wall(855, 90, 900, 280));
     map.addWall(Wall(650, 235, 900, 280));
 
-    map.addWall(Wall(0, 0, 20, 720));
-    map.addWall(Wall(0, 700, 1280, 720));
-    map.addWall(Wall(1260, 0, 1280, 720));
+    map.addWall(Wall(0, 0, 20, 1280));
+    map.addWall(Wall(0, 1260, 1280, 1280));
+    map.addWall(Wall(1260, 0, 1280, 1280));
     map.addWall(Wall(0, 0, 1280, 20));
 }
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(Constants::window_width, Constants::window_height), "Pseudo3D Renderer", sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode(1366, 720), "Pseudo3D Renderer", sf::Style::Close);
     window.setKeyRepeatEnabled(true);
     sf::Event event;
 
