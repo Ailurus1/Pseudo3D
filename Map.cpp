@@ -10,10 +10,14 @@ void Wall::setColor(const sf::Color &new_color) {
 
 void Map::addWall(const Wall &wall) {
     walls.emplace_back(wall);
+    surfaces.push_back({{wall.left_upper_x, wall.left_upper_y}, {wall.right_lower_x, wall.left_upper_y}});
+    surfaces.push_back({{wall.left_upper_x, wall.left_upper_y}, {wall.left_upper_x, wall.right_lower_y}});
+    surfaces.push_back({{wall.left_upper_x, wall.right_lower_y}, {wall.right_lower_x, wall.right_lower_y}});
+    surfaces.push_back({{wall.right_lower_x, wall.left_upper_y}, {wall.right_lower_x, wall.right_lower_y}});
 }
 
 void Map::drawWall(sf::RenderWindow &current_window, const Wall &wall) {
-    sf::RectangleShape wall_rectangle(sf::Vector2f(abs(wall.right_lower_x - wall.left_upper_x), abs(wall.right_lower_y - wall.left_upper_y)));
+    sf::RectangleShape wall_rectangle(sf::Vector2f(std::abs(wall.right_lower_x - wall.left_upper_x),std::abs(wall.right_lower_y - wall.left_upper_y)));
     wall_rectangle.setPosition(wall.left_upper_x, wall.left_upper_y);
     wall_rectangle.setFillColor(wall.color);
     current_window.draw(wall_rectangle);
@@ -41,13 +45,6 @@ void Map::render(sf::RenderWindow &current_window, const RenderSize &render_size
     }
 }
 
-std::vector<segment_t> Map::calculateAllSurfacesCoordinates() {
-    std::vector<segment_t> res;
-    for (const auto &wall: walls) {
-        res.push_back({{wall.left_upper_x, wall.left_upper_y}, {wall.right_lower_x, wall.left_upper_y}});
-        res.push_back({{wall.left_upper_x, wall.left_upper_y}, {wall.left_upper_x, wall.right_lower_y}});
-        res.push_back({{wall.left_upper_x, wall.right_lower_y}, {wall.right_lower_x, wall.right_lower_y}});
-        res.push_back({{wall.right_lower_x, wall.left_upper_y}, {wall.right_lower_x, wall.right_lower_y}});
-    }
-    return res;
+std::vector<segment_t> Map::getSurfaces() {
+    return surfaces;
 }

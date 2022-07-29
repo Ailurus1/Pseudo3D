@@ -1,5 +1,15 @@
-/SFML/
+.idea
+cmake-build-debug
+cmake-build-release
 
-/.vscode/
+SFML
 
-/build/
+*.sh
+*.exe
+*.out
+*.app
+*.so
+*.dylib
+*.dll
+*.o
+*.obj

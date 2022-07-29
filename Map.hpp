@@ -19,6 +19,8 @@ struct Wall {
 class Map {
     protected:
         std::vector<Wall> walls;
+
+        std::vector<segment_t> surfaces;
     public:
         Map() = default;
 
@@ -26,11 +28,11 @@ class Map {
 
         void addWall(const Wall &wall);
 
-        void drawWall(sf::RenderWindow &current_window, const Wall &wall);
+        static void drawWall(sf::RenderWindow &current_window, const Wall &wall);
 
         void render(sf::RenderWindow &current_window, const RenderSize &render_size);
 
-        std::vector<segment_t> calculateAllSurfacesCoordinates();
+        std::vector<segment_t> getSurfaces();
 };
 
 #endif

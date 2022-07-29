@@ -20,23 +20,25 @@ class Player {
 
         float dx = 0, dy = 0;
     public:
-        Player() = default;
+        Player();
 
         Player(const float &xx, const float &yy, const float &aa): x(xx), y(yy), angle(aa), dx(std::cos(aa)), dy(std::sin(aa)) {};
 
-        float getX();
+        [[nodiscard]] float getX() const;
 
-        float getY();
+        [[nodiscard]] float getY() const;
 
-        float getAngle();
+        [[nodiscard]] float getAngle() const;
+
+        void setPosition(const sf::Vector2f &coords);
 
         void move(const Direction &direction);
 
         void changeAngle(const float &value);
 
-        void renderPlayer(sf::RenderWindow &current_window, const RenderSize &render_size);
+        void renderPlayer(sf::RenderWindow &current_window, const RenderSize &render_size) const;
 
-        void castRays(sf::RenderWindow &current_window, const std::vector<segment_t> &walls, const RenderSize &render_size, const RenderMode &render_mode);
+        void castRays(sf::RenderWindow &current_window, const std::vector<segment_t> &walls, const RenderSize &render_size, const RenderMode &render_mode) const;
 };
 
 #endif

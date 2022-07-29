@@ -1,24 +1,36 @@
 #include "Player.hpp"
 
-float Player::getX() {
+Player::Player() {
+    x = Constants::window_width / 2.f;
+    y = Constants::window_height / 2.f;
+    angle = 0.f;
+}
+
+float Player::getX() const {
     return x;
 }
 
-float Player::getY() {
+float Player::getY() const {
     return y;
 }
 
-float Player::getAngle() {
+float Player::getAngle() const {
     return angle;
+}
+
+void Player::setPosition(const sf::Vector2f &coords) {
+    x = coords.x;
+    y = coords.y;
 }
 
 void Player::move(const Direction &direction) {
     switch (direction) {
         case Direction::FORWARD:
-            x += dx * std::cos(angle) * speed, y += dy * std::sin(angle) * speed;
+            x += dx * std::cos(angle) * speed, y += dy * std::sin(angle) * speed * (static_cast<float>(Constants::window_width) / static_cast<float>(Constants::window_height));
+//            x += dx * std::cos(angle) * speed, y += dy * std::sin(angle) * speed * 18;
             break;
         case Direction::BACKWARD:
-            x -= dx * std::cos(angle) * speed, y -= dy * std::sin(angle) * speed;
+            x -= dx * std::cos(angle) * speed, y -= dy * std::sin(angle) * speed * (static_cast<float>(Constants::window_width) / static_cast<float>(Constants::window_height));
             break;
         default:
             break;
@@ -37,7 +49,7 @@ void Player::changeAngle(const float &value) {
     dy = std::sin(Utils::radians(angle));
 }
 
-void Player::renderPlayer(sf::RenderWindow &current_window, const RenderSize &render_size) {
+void Player::renderPlayer(sf::RenderWindow &current_window, const RenderSize &render_size) const {
     float scale = Utils::getScale(render_size);
     sf::CircleShape player;
     player.setFillColor(sf::Color::Red);
@@ -46,7 +58,7 @@ void Player::renderPlayer(sf::RenderWindow &current_window, const RenderSize &re
     current_window.draw(player);
 }
 
-void Player::castRays(sf::RenderWindow &current_window, const std::vector<segment_t> &walls, const RenderSize &render_size, const RenderMode &render_mode) {
+void Player::castRays(sf::RenderWindow &current_window, const std::vector<segment_t> &walls, const RenderSize &render_size, const RenderMode &render_mode) const {
     size_t horizontal_offset = 0;
     float max_dist = std::sqrt(Constants::window_width * Constants::window_width + Constants::window_height * Constants::window_height);
     int color_coef = max_dist / 255;
@@ -83,7 +95,7 @@ void Player::castRays(sf::RenderWindow &current_window, const std::vector<segmen
         }
         else {
             float width_coef = 1.f / (static_cast<float>(Constants::window_width));
-            float current_dist = static_cast<float>(std::sqrt(std::pow(first_intersection.x - ray_start.x, 2) + std::pow(first_intersection.y - ray_start.y, 2)));
+            auto current_dist = static_cast<float>(std::sqrt(std::pow(first_intersection.x - ray_start.x, 2) + std::pow(first_intersection.y - ray_start.y, 2)));
 
             int color_offset = static_cast<int>(current_dist) / color_coef;
             sf::Vertex line[] =
