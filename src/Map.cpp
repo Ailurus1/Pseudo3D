@@ -1,4 +1,4 @@
-#include "Map.hpp"
+#include "../include/Map.hpp"
 
 std::vector<Wall> Map::getWalls() {
     return walls;
@@ -10,22 +10,42 @@ void Wall::setColor(const sf::Color &new_color) {
 
 void Map::addWall(const Wall &wall) {
     walls.emplace_back(wall);
-    surfaces.push_back({{wall.left_upper_x, wall.left_upper_y}, {wall.right_lower_x, wall.left_upper_y}});
-    surfaces.push_back({{wall.left_upper_x, wall.left_upper_y}, {wall.left_upper_x, wall.right_lower_y}});
-    surfaces.push_back({{wall.left_upper_x, wall.right_lower_y}, {wall.right_lower_x, wall.right_lower_y}});
-    surfaces.push_back({{wall.right_lower_x, wall.left_upper_y}, {wall.right_lower_x, wall.right_lower_y}});
+    surfaces.push_back({{wall.left_upper_x,  wall.left_upper_y},
+                        {wall.right_lower_x, wall.left_upper_y}});
+    surfaces.push_back({{wall.left_upper_x, wall.left_upper_y},
+                        {wall.left_upper_x, wall.right_lower_y}});
+    surfaces.push_back({{wall.left_upper_x,  wall.right_lower_y},
+                        {wall.right_lower_x, wall.right_lower_y}});
+    surfaces.push_back({{wall.right_lower_x, wall.left_upper_y},
+                        {wall.right_lower_x, wall.right_lower_y}});
 }
 
 void Map::drawWall(sf::RenderWindow &current_window, const Wall &wall) {
-    sf::RectangleShape wall_rectangle(sf::Vector2f(std::abs(wall.right_lower_x - wall.left_upper_x),std::abs(wall.right_lower_y - wall.left_upper_y)));
+    sf::RectangleShape wall_rectangle(
+            sf::Vector2f(std::abs(wall.right_lower_x - wall.left_upper_x), std::abs(wall.right_lower_y - wall.left_upper_y)));
     wall_rectangle.setPosition(wall.left_upper_x, wall.left_upper_y);
     wall_rectangle.setFillColor(wall.color);
     current_window.draw(wall_rectangle);
 }
 
+void Map::drawSky(sf::RenderWindow &current_window, const sf::Color &color) {
+    sf::RectangleShape sky({Constants::window_width, Constants::window_height / 2.f});
+    sky.setFillColor(color);
+    sky.setPosition(0.f, 0.f);
+    current_window.draw(sky);
+}
+
+void Map::drawFloor(sf::RenderWindow &current_window, const sf::Color &color) {
+    sf::RectangleShape floor({Constants::window_width, Constants::window_height / 2.f});
+    floor.setFillColor(color);
+    floor.setPosition(0.f, Constants::window_height / 2.f);
+    current_window.draw(floor);
+}
+
 void Map::render(sf::RenderWindow &current_window, const RenderSize &render_size) {
     float scale = Utils::getScale(render_size);
-    sf::Vector2f left_upper_background = {std::numeric_limits<float>::max(), std::numeric_limits<float>::max()}, right_lower_background = {std::numeric_limits<float>::min(), std::numeric_limits<float>::min()};
+    sf::Vector2f left_upper_background = {std::numeric_limits<float>::max(), std::numeric_limits<float>::max()},
+                 right_lower_background = {std::numeric_limits<float>::min(), std::numeric_limits<float>::min()};
     for (const auto &wall: walls) {
         left_upper_background.x = std::min(wall.left_upper_x * scale, left_upper_background.x);
         left_upper_background.y = std::min(wall.left_upper_y * scale, left_upper_background.y);

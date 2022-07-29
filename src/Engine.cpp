@@ -1,16 +1,18 @@
-#include "Engine.hpp"
+#include "../include/Engine.hpp"
 
 Engine::Engine(std::vector<wall_corners_t> &walls, const size_t &window_width_p, const size_t &window_height_p) {
     time_without_update = 0.0, update_interval = 1.f / float(Constants::fps);
     window_width = window_width_p;
     window_height = window_height_p;
-    player = Player(150, 150, 25);
+    player = Player(120, 120, 25);
     for (const auto &wall: walls) {
         map.addWall(Wall(wall.first.x, wall.first.y, wall.second.x, wall.second.y));
     }
 }
 
 void Engine::render(const bool &render_minimap) {
+    Map::drawSky(window, sf::Color(175, 255, 245));
+    Map::drawFloor(window, sf::Color(55, 55, 55));
     player.castRays(window, map.getSurfaces(), RenderSize::FULLSCREEN, RenderMode::RENDER_3D);
     if (render_minimap) {
         map.render(window, RenderSize::MINI);
@@ -45,10 +47,10 @@ void Engine::run() {
                 player.changeAngle(Constants::basic_angle_change);
             }
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-                player.move(Direction::FORWARD);
+                player.move(map, Direction::FORWARD);
             }
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-                player.move(Direction::BACKWARD);
+                player.move(map, Direction::BACKWARD);
             }
             time_without_update -= update_interval;
         }

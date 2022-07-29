@@ -17,7 +17,6 @@ enum class Direction {
 class Player {
     protected:
         float x, y, angle, speed = Constants::basic_speed;
-
         float dx = 0, dy = 0;
     public:
         Player();
@@ -32,7 +31,9 @@ class Player {
 
         void setPosition(const sf::Vector2f &coords);
 
-        void move(const Direction &direction);
+        static bool checkCollision(Map &map, const float &xx, const float &yy);
+
+        void move(Map &map, const Direction &direction);
 
         void changeAngle(const float &value);
 

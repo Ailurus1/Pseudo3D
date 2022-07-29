@@ -1,4 +1,4 @@
-#include "Utils.hpp"
+#include "../include/Utils.hpp"
 
 Utils::Line::Line(const sf::Vector2f &p, const sf::Vector2f &q) {
     a = p.y - q.y, b = q.x - p.x, c = -a * p.x - b * p.y;
