@@ -9,7 +9,7 @@
 
 struct Wall {
     float left_upper_x, left_upper_y, right_lower_x, right_lower_y;
-    sf::Color color = sf::Color::White;
+    sf::Color color = sf::Color(155, 155, 155);
 
     Wall(const float &x1, const float &y1, const float &x2, const float &y2): left_upper_x(x1), left_upper_y(y1), right_lower_x(x2),
                                                                               right_lower_y(y2) {};

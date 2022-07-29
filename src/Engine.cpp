@@ -15,9 +15,9 @@ void Engine::render(const bool &render_minimap) {
     Map::drawFloor(window, sf::Color(55, 55, 55));
     player.castRays(window, map.getSurfaces(), RenderSize::FULLSCREEN, RenderMode::RENDER_3D);
     if (render_minimap) {
-        map.render(window, RenderSize::MINI);
-        player.renderPlayer(window, RenderSize::MINI);
-        player.castRays(window, map.getSurfaces(), RenderSize::MINI, RenderMode::RENDER_2D);
+        map.render(window, RenderSize::MEDIUM);
+        player.renderPlayer(window, RenderSize::MEDIUM);
+        player.castRays(window, map.getSurfaces(), RenderSize::MEDIUM, RenderMode::RENDER_2D);
     }
     window.display();
 }
